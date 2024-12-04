@@ -1,0 +1,452 @@
+[
+    {
+        "id": "3261f973d20c8593",
+        "type": "tab",
+        "label": "Flujo 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "mqttInput",
+        "type": "mqtt in",
+        "z": "3261f973d20c8593",
+        "name": "MQTT Temperatura",
+        "topic": "sensor/temperature",
+        "qos": "0",
+        "datatype": "auto",
+        "broker": "mqttBroker",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 130,
+        "y": 260,
+        "wires": [
+            [
+                "c57ec4c5d4e6df7a"
+            ]
+        ]
+    },
+    {
+        "id": "mqttInputGas",
+        "type": "mqtt in",
+        "z": "3261f973d20c8593",
+        "name": "MQTT Nivel de Gas",
+        "topic": "sensor/gas",
+        "qos": "0",
+        "datatype": "auto",
+        "broker": "mqttBroker",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 130,
+        "y": 340,
+        "wires": [
+            [
+                "58c056322a6bf207"
+            ]
+        ]
+    },
+    {
+        "id": "databaseInsert",
+        "type": "function",
+        "z": "3261f973d20c8593",
+        "name": "Insertar en DB",
+        "func": "var Temperatura = global.get(\"temperatura\");\nvar Nivel_gas = global.get(\"mq2value\");\n\nmsg.payload = [Temperatura, Nivel_gas];\nmsg.topic = \"INSERT INTO `fuga`.`Lecturas` (`Temperatura`,`Nivel_gas` ) VALUES (?, ?);\"\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 500,
+        "wires": [
+            [
+                "database"
+            ]
+        ]
+    },
+    {
+        "id": "database",
+        "type": "mysql",
+        "z": "3261f973d20c8593",
+        "mydb": "f51429a6463963a0",
+        "name": "DBFuga",
+        "x": 540,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "cf78c3d603f76268",
+        "type": "ui_gauge",
+        "z": "3261f973d20c8593",
+        "name": "",
+        "group": "8ae9bf347217c0d7",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Temperatura",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 650,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "3db5a0b785fbbdc1",
+        "type": "ui_gauge",
+        "z": "3261f973d20c8593",
+        "name": "",
+        "group": "8ae9bf347217c0d7",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Nivel gas",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "4000",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 640,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "c57ec4c5d4e6df7a",
+        "type": "function",
+        "z": "3261f973d20c8593",
+        "name": "temperatura",
+        "func": "global.set(\"temperatura\",  msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 260,
+        "wires": [
+            [
+                "cf78c3d603f76268",
+                "d95de52938a4f2fd"
+            ]
+        ]
+    },
+    {
+        "id": "58c056322a6bf207",
+        "type": "function",
+        "z": "3261f973d20c8593",
+        "name": "Gas",
+        "func": "global.set(\"mq2value\",  msg.payload);\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 340,
+        "wires": [
+            [
+                "3db5a0b785fbbdc1",
+                "6ba50e06d77d9450"
+            ]
+        ]
+    },
+    {
+        "id": "6ba50e06d77d9450",
+        "type": "debug",
+        "z": "3261f973d20c8593",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 500,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "d95de52938a4f2fd",
+        "type": "debug",
+        "z": "3261f973d20c8593",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 500,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "fe3a5efcf2ac7551",
+        "type": "inject",
+        "z": "3261f973d20c8593",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "15",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 120,
+        "y": 500,
+        "wires": [
+            [
+                "databaseInsert"
+            ]
+        ]
+    },
+    {
+        "id": "9223ea27a6ef5f78",
+        "type": "ui_button",
+        "z": "3261f973d20c8593",
+        "name": "",
+        "group": "832966606aaf0768",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Actualizar",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 140,
+        "y": 600,
+        "wires": [
+            [
+                "ba27098b74e222c6"
+            ]
+        ]
+    },
+    {
+        "id": "8e29024b28a0462a",
+        "type": "ui_button",
+        "z": "3261f973d20c8593",
+        "name": "",
+        "group": "832966606aaf0768",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Borrar",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 130,
+        "y": 660,
+        "wires": [
+            [
+                "c8bfa5e6e84d8b23"
+            ]
+        ]
+    },
+    {
+        "id": "ba27098b74e222c6",
+        "type": "function",
+        "z": "3261f973d20c8593",
+        "name": "function 1",
+        "func": "msg.topic = \"select * from Lecturas\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 600,
+        "wires": [
+            [
+                "7f40bf859f84deda"
+            ]
+        ]
+    },
+    {
+        "id": "7f40bf859f84deda",
+        "type": "mysql",
+        "z": "3261f973d20c8593",
+        "mydb": "f51429a6463963a0",
+        "name": "",
+        "x": 460,
+        "y": 600,
+        "wires": [
+            [
+                "b67d6674fe61608b"
+            ]
+        ]
+    },
+    {
+        "id": "b67d6674fe61608b",
+        "type": "ui_table",
+        "z": "3261f973d20c8593",
+        "group": "832966606aaf0768",
+        "name": "",
+        "order": 1,
+        "width": "10",
+        "height": "6",
+        "columns": [],
+        "outputs": 0,
+        "cts": false,
+        "x": 610,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "c8bfa5e6e84d8b23",
+        "type": "function",
+        "z": "3261f973d20c8593",
+        "name": "function 2",
+        "func": "msg.topic = \"delete from Lecturas\"\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 660,
+        "wires": [
+            [
+                "5743048d777e4c37"
+            ]
+        ]
+    },
+    {
+        "id": "5743048d777e4c37",
+        "type": "mysql",
+        "z": "3261f973d20c8593",
+        "mydb": "f51429a6463963a0",
+        "name": "",
+        "x": 460,
+        "y": 660,
+        "wires": [
+            [
+                "ba27098b74e222c6"
+            ]
+        ]
+    },
+    {
+        "id": "mqttBroker",
+        "type": "mqtt-broker",
+        "name": "MQTT Broker",
+        "broker": "mqtt.eclipseprojects.io",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": false,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "f51429a6463963a0",
+        "type": "MySQLdatabase",
+        "name": "DBFuga",
+        "host": "172.17.0.4",
+        "port": "3306",
+        "db": "fuga",
+        "tz": "",
+        "charset": "UTF8"
+    },
+    {
+        "id": "8ae9bf347217c0d7",
+        "type": "ui_group",
+        "name": "Tabla",
+        "tab": "ba267c3f6ed80e4a",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "832966606aaf0768",
+        "type": "ui_group",
+        "name": "Base de datos",
+        "tab": "bb61cf5e54b27abb",
+        "order": 1,
+        "disp": true,
+        "width": "10",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "ba267c3f6ed80e4a",
+        "type": "ui_tab",
+        "name": "Datos",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "bb61cf5e54b27abb",
+        "type": "ui_tab",
+        "name": "Vistas",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
